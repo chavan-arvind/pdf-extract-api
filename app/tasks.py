@@ -2,13 +2,15 @@ import time
 from celery_config import celery
 from ocr_strategies.marker import MarkerOCRStrategy
 from ocr_strategies.tesseract import TesseractOCRStrategy
+from ocr_strategies.s3 import S3OCRStrategy
 import redis
 import os
 import ollama
 
 OCR_STRATEGIES = {
     'marker': MarkerOCRStrategy(),
-    'tesseract': TesseractOCRStrategy()
+    'tesseract': TesseractOCRStrategy(),
+    's3': S3OCRStrategy()
 }
 
 # Connect to Redis
@@ -21,7 +23,7 @@ def ocr_task(self, pdf_bytes, strategy_name, pdf_hash, ocr_cache, prompt, model)
     Celery task to perform OCR processing on a PDF file.
     """
     if strategy_name not in OCR_STRATEGIES:
-        raise ValueError(f"Unknown strategy '{strategy_name}'. Available: marker, tesseract")
+        raise ValueError(f"Unknown strategy '{strategy_name}'. Available: marker, tesseract, s3")
     
     start_time = time.time()
 
